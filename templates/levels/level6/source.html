@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<body id="demo-code">
+<!-- Include required JS files -->
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript" src="/static/game.js"></script>
+
+<link href="/static/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeFadeToGrey.css" rel="stylesheet" type="text/css" />
+<link href="/static/game.css" rel="stylesheet" type="text/css" />
+
+<div id="multi-header">
+
+<div class="select-file" id="select-gadget.js"
+    onclick="selectFile(this, 'gadget.js')">gadget.js</div><div class="select-file" id="select-index.html"
+    onclick="selectFile(this, 'index.html')">index.html</div><div class="select-file" id="select-level.py"
+    onclick="selectFile(this, 'level.py')">level.py</div>
+
+</div>
+
+<div id="multi-examples">
+
+<pre id="gadget.js" class="brush: jscript">/* This is a completely awesome invisible gadget */
+</pre><pre id="index.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+
+    &lt;script>
+    function setInnerText(element, value) {
+      if (element.innerText) {
+        element.innerText = value;
+      } else {
+        element.textContent = value;
+      }
+    }
+
+    function includeGadget(url) {
+      var scriptEl = document.createElement('script');
+
+      // This will totally prevent us from loading evil URLs!
+      if (url.match(/^https?:\/\//)) {
+        setInnerText(document.getElementById("log"),
+          "Sorry, cannot load a URL containing \"http\".");
+        return;
+      }
+
+      // Load this awesome gadget
+      scriptEl.src = url;
+
+      // Show log messages
+      scriptEl.onload = function() { 
+        setInnerText(document.getElementById("log"),  
+          "Loaded gadget from " + url);
+      }
+      scriptEl.onerror = function() { 
+        setInnerText(document.getElementById("log"),  
+          "Couldn't load gadget from " + url);
+      }
+
+      document.head.appendChild(scriptEl);
+    }
+
+    // Take the value after # and use it as the gadget filename.
+    function getGadgetName() { 
+      return window.location.hash.substr(1) || "/static/gadget.js";
+    }
+
+    includeGadget(getGadgetName());
+
+    // Extra code so that we can communicate with the parent page
+    window.addEventListener("message", function(event){
+      if (event.source == parent) {
+        includeGadget(getGadgetName());
+      }
+    }, false);
+
+    &lt;/script>
+  &lt;/head>
+
+  &lt;body id="level6">
+    &lt;img src="/static/logos/level6.png">
+    &lt;img id="cube" src="/static/level6_cube.png">
+    &lt;div id="log">Loading gadget...&lt;/div>
+  &lt;/body>
+&lt;/html>
+</pre><pre id="level.py" class="brush: python">class MainPage(webapp.RequestHandler):
+  def render_template(self, filename, context={}):
+    path = os.path.join(os.path.dirname(__file__), filename)
+    self.response.out.write(template.render(path, context))
+
+  def get(self):
+    self.render_template('index.html')
+
+application = webapp.WSGIApplication([ ('.*', MainPage), ], debug=False)</pre>
+  <script>
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+    }, 500);
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+      }, 1000);
+  </script>
+
+</div>
+
+<script type="text/javascript"> 
+  SyntaxHighlighter.all() 
+</script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+
+<body id="demo-code">
+<!-- Include required JS files -->
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript" src="/static/game.js"></script>
+
+<link href="/static/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeFadeToGrey.css" rel="stylesheet" type="text/css" />
+<link href="/static/game.css" rel="stylesheet" type="text/css" />
+
+<div id="multi-header">
+
+<div class="select-file" id="select-index.html"
+    onclick="selectFile(this, 'index.html')">index.html</div><div class="select-file" id="select-level.py"
+    onclick="selectFile(this, 'level.py')">level.py</div><div class="select-file" id="select-post-store.js"
+    onclick="selectFile(this, 'post-store.js')">post-store.js</div>
+
+</div>
+
+<div id="multi-examples">
+
+<pre id="index.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+
+    &lt;!-- This is our database of messages -->
+    &lt;script src="/static/post-store.js">&lt;/script>
+  
+    &lt;script>
+      var defaultMessage = "Welcome!&lt;br>&lt;br>This is your &lt;i>personal&lt;/i>"
+        + " stream. You can post anything you want here, especially "
+        + "&lt;span style='color: #f00ba7'>madness&lt;/span>.";
+
+      var DB = new PostDB(defaultMessage);
+
+      function displayPosts() {
+        var containerEl = document.getElementById("post-container");
+        containerEl.innerHTML = "";
+
+        var posts = DB.getPosts();
+        for (var i=0; i&lt;posts.length; i++) {
+          var html = '&lt;table class="message"> &lt;tr> &lt;td valign=top> '
+            + '&lt;img src="/static/level2_icon.png"> &lt;/td> &lt;td valign=top '
+            + ' class="message-container"> &lt;div class="shim">&lt;/div>';
+
+          html += '&lt;b>You&lt;/b>';
+          html += '&lt;span class="date">' + new Date(posts[i].date) + '&lt;/span>';
+          html += "&lt;blockquote>" + posts[i].message + "&lt;/blockquote";
+          html += "&lt;/td>&lt;/tr>&lt;/table>"
+          containerEl.innerHTML += html; 
+        }
+      }
+
+      window.onload = function() { 
+        document.getElementById('clear-form').onsubmit = function() {
+          DB.clear(function() { displayPosts() });
+          return false;
+        }
+
+        document.getElementById('post-form').onsubmit = function() {
+          var message = document.getElementById('post-content').value;
+          DB.save(message, function() { displayPosts() } );
+          document.getElementById('post-content').value = "";
+          return false;
+        }
+
+        displayPosts();
+      }
+
+    &lt;/script>
+
+  &lt;/head>
+
+  &lt;body id="level2">
+    &lt;div id="header">
+      &lt;img src="/static/logos/level2.png" /> 
+      &lt;div>Chatter from across the Web.&lt;/div>
+      &lt;form action="?" id="clear-form">
+        &lt;input class="clear" type="submit" value="Clear all posts">
+      &lt;/form>
+    &lt;/div>
+
+    &lt;div id="post-container">&lt;/div>
+
+    &lt;table class="message">
+      &lt;tr>
+        &lt;td valign="top">
+          &lt;img src="/static/level2_icon.png">
+        &lt;/td>
+        &lt;td class="message-container">
+          &lt;div class="shim">&lt;/div>
+          &lt;form action="?" id="post-form">
+            &lt;textarea id="post-content" name="content" rows="2" 
+              cols="50">&lt;/textarea>
+            &lt;input class="share" type="submit" value="Share status!">
+            &lt;input type="hidden" name="action" value="sign">
+          &lt;/form>
+        &lt;/td>
+      &lt;/tr>
+    &lt;/table>
+
+  &lt;/body>
+&lt;/html>
+</pre><pre id="level.py" class="brush: python">class MainPage(webapp.RequestHandler):
+
+  def render_template(self, filename, context={}):
+    path = os.path.join(os.path.dirname(__file__), filename)
+    self.response.out.write(template.render(path, context))
+
+  def get(self):
+    self.render_template('index.html')
+
+application = webapp.WSGIApplication([ ('.*', MainPage) ], debug=False)</pre><pre id="post-store.js" class="brush: jscript">/*
+ * Objects to implement a client-side post database.
+ */
+
+function Post(message) { 
+  this.message = message;
+  this.date = (new Date()).getTime();
+}
+
+function PostDB(defaultMessage) {
+  // Initial message to display to users
+  this._defaultMessage = defaultMessage || "";
+
+  this.setup = function() {
+    var defaultPost = new Post(defaultMessage);
+    window.localStorage["postDB"] = JSON.stringify({
+      "posts" : [defaultPost]
+    });
+  }
+
+  this.save = function(message, callback) {
+    var newPost = new Post(message);
+    var allPosts = this.getPosts();
+    allPosts.push(newPost);
+    window.localStorage["postDB"] = JSON.stringify({
+      "posts" : allPosts
+    });
+
+    callback();
+    return false;
+  }
+
+  this.clear = function(callback) {
+    this.setup();
+
+    callback();
+    return false;
+  }
+
+  this.getPosts = function() {
+    return JSON.parse(window.localStorage["postDB"]).posts;
+  }
+
+  if(!window.localStorage["postDB"]) { 
+    this.setup();
+  }
+}
+</pre>
+  <script>
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+    }, 500);
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+      }, 1000);
+  </script>
+
+</div>
+
+<script type="text/javascript"> 
+  SyntaxHighlighter.all() 
+</script>
+
+</body>
+</html>

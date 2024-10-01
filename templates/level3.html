@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <title>XSS game: Level 3</title>
+    <link  type="text/css" rel="stylesheet" href="/static/game.css" />
+    <script src="/static/game.js"></script>
+    <script>
+      window.onload = function() { setInputFieldReturnHandler(); }
+    </script>
+  </head>
+  <body>
+    <h1 id="level-title">[3/6]&nbsp;
+      Level 3: That sinking feeling...</h1>
+
+    <div id="instructions">
+
+    <h2>Mission Description</h2>
+
+    
+  As you've seen in the previous level, some common JS functions 
+  are <i>execution sinks</i> which means that they will cause the
+  browser to execute any scripts that appear in their input. 
+  Sometimes this fact is hidden by higher-level APIs which 
+  use one of these functions under the hood.
+  <br><br>
+  The application on this level is using one such hidden sink.
+
+
+    <h2>Mission Objective</h2>
+
+    
+    As before, inject a script to pop up a JavaScript <code>alert()</code> in
+    the app.
+    <br><br>
+    Since you can't enter your payload anywhere in the application,
+    you will have to manually edit the address in the URL bar below.
+
+
+    <div id="next-controls">
+       
+        <a class="next-button" href="/level4">Advance to next level &gt;&gt;</a>
+      
+
+    </div>
+
+    <h2>Your Target</h2>
+  </div>
+
+  <div id="game-frame-container">
+    <div id="topbar"></div>
+    <div class="example-controls">
+      <span class="url">URL</span>
+      <input id="input1" class="urlbar" type="text" value="">
+      <input class="urlbutton" type="Submit" value="Go"
+      onclick="updateFrame(1); return false;">
+    </div>
+    <iframe class="game-frame" src="/level3/frame"></iframe>
+  </div>
+
+  <h2>Target code (<a href="#" onclick="toggleCode(); return false">toggle</a>)</h2>
+
+  <iframe id="source-frame" src="/level3/source"></iframe>
+
+  <h2>Hints <span id="hint-num">0</span>/4 (<a
+      href="#" onclick="showHint(); return false">show</a>)</h2>
+
+  <div id="hints">
+    <ol>
+  
+    <li style="display: none" data-hidden="true"><b>1.</b> 
+    To locate the cause of the bug, review the JavaScript
+         to see where it handles user-supplied input.
+  
+    <li style="display: none" data-hidden="true"><b>2.</b> 
+    Data in the <code>window.location</code> object can be
+         influenced by an attacker.
+  
+    <li style="display: none" data-hidden="true"><b>3.</b> 
+    When you've identified the injection point, think about
+         what you need to do to sneak in a new HTML element.
+  
+    <li style="display: none" data-hidden="true"><b>4.</b> 
+    As before, using <code>&lt;script&gt; ...</code> as
+         a payload won't work because the browser won't execute scripts
+         added after the page has loaded.
+  
+    </ol>
+  </div>
+
+  </body>
+</html>

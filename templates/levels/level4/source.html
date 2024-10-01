@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+
+<body id="demo-code">
+<!-- Include required JS files -->
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript" src="/static/game.js"></script>
+
+<link href="/static/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeFadeToGrey.css" rel="stylesheet" type="text/css" />
+<link href="/static/game.css" rel="stylesheet" type="text/css" />
+
+<div id="multi-header">
+
+<div class="select-file" id="select-index.html"
+    onclick="selectFile(this, 'index.html')">index.html</div><div class="select-file" id="select-level.py"
+    onclick="selectFile(this, 'level.py')">level.py</div><div class="select-file" id="select-timer.html"
+    onclick="selectFile(this, 'timer.html')">timer.html</div>
+
+</div>
+
+<div id="multi-examples">
+
+<pre id="index.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+  &lt;/head>
+
+  &lt;body id="level4">
+    &lt;img src="/static/logos/level4.png" />
+    &lt;br>
+    &lt;form action="" method="GET">
+      &lt;input id="timer" name="timer" value="3">
+      &lt;input id="button" type="submit" value="Create timer"> &lt;/form>
+    &lt;/form>
+  &lt;/body>
+&lt;/html>
+</pre><pre id="level.py" class="brush: python">class MainPage(webapp.RequestHandler):
+
+  def render_template(self, filename, context={}):
+    path = os.path.join(os.path.dirname(__file__), filename)
+    self.response.out.write(template.render(path, context))
+
+  def get(self):
+    # Disable the reflected XSS filter for demonstration purposes
+    self.response.headers.add_header("X-XSS-Protection", "0")
+
+    if not self.request.get('timer'):
+      # Show main timer page
+      self.render_template('index.html')
+    else:
+      # Show the results page
+      timer= self.request.get('timer', 0)
+      self.render_template('timer.html', { 'timer' : timer })
+    
+    return
+
+application = webapp.WSGIApplication([ ('.*', MainPage), ], debug=False)</pre><pre id="timer.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+
+    &lt;script>
+      function startTimer(seconds) {
+        seconds = parseInt(seconds) || 3;
+        setTimeout(function() { 
+          window.confirm("Time is up!");
+          window.history.back();
+        }, seconds * 1000);
+      }
+    &lt;/script>
+  &lt;/head>
+  &lt;body id="level4">
+    &lt;img src="/static/logos/level4.png" />
+    &lt;br>
+    &lt;img src="/static/loading.gif" onload="startTimer('{{ timer }}');" />
+    &lt;br>
+    &lt;div id="message">Your timer will execute in {{ timer }} seconds.&lt;/div>
+  &lt;/body>
+&lt;/html>
+</pre>
+  <script>
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+    }, 500);
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-index.html'), 
+      'index.html')
+      }, 1000);
+  </script>
+
+</div>
+
+<script type="text/javascript"> 
+  SyntaxHighlighter.all() 
+</script>
+
+</body>
+</html>

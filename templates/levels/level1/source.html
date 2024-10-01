@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<body id="demo-code">
+<!-- Include required JS files -->
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript" src="/static/game.js"></script>
+
+<link href="/static/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeFadeToGrey.css" rel="stylesheet" type="text/css" />
+<link href="/static/game.css" rel="stylesheet" type="text/css" />
+
+<div id="multi-header">
+
+<div class="select-file" id="select-level.py"
+    onclick="selectFile(this, 'level.py')">level.py</div>
+
+</div>
+
+<div id="multi-examples">
+
+<pre id="level.py" class="brush: python">page_header = """
+&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+  &lt;/head>
+
+  &lt;body id="level1">
+    &lt;img src="/static/logos/level1.png">
+      &lt;div>
+"""
+
+page_footer = """
+    &lt;/div>
+  &lt;/body>
+&lt;/html>
+"""
+
+main_page_markup = """
+&lt;form action="" method="GET">
+  &lt;input id="query" name="query" value="Enter query here..."
+    onfocus="this.value=''">
+  &lt;input id="button" type="submit" value="Search">
+&lt;/form>
+"""
+
+class MainPage(webapp.RequestHandler):
+
+  def render_string(self, s):
+    self.response.out.write(s)
+
+  def get(self):
+    # Disable the reflected XSS filter for demonstration purposes
+    self.response.headers.add_header("X-XSS-Protection", "0")
+
+    if not self.request.get('query'):
+      # Show main search page
+      self.render_string(page_header + main_page_markup + page_footer)
+    else:
+      query = self.request.get('query', '[empty]')
+      
+      # Our search engine broke, we found no results :-(
+      message = "Sorry, no results were found for &lt;b>" + query + "&lt;/b>."
+      message += " &lt;a href='?'>Try again&lt;/a>."
+
+      # Display the results page
+      self.render_string(page_header + message + page_footer)
+    
+    return
+
+application = webapp.WSGIApplication([ ('.*', MainPage), ], debug=False)</pre>
+  <script>
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-level.py'), 
+      'level.py')
+    }, 500);
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-level.py'), 
+      'level.py')
+      }, 1000);
+  </script>
+
+</div>
+
+<script type="text/javascript"> 
+  SyntaxHighlighter.all() 
+</script>
+
+</body>
+</html>

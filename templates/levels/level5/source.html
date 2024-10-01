@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+
+<body id="demo-code">
+<!-- Include required JS files -->
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript" src="/static/game.js"></script>
+
+<link href="/static/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+<link href="/static/syntaxhighlighter/styles/shThemeFadeToGrey.css" rel="stylesheet" type="text/css" />
+<link href="/static/game.css" rel="stylesheet" type="text/css" />
+
+<div id="multi-header">
+
+<div class="select-file" id="select-confirm.html"
+    onclick="selectFile(this, 'confirm.html')">confirm.html</div><div class="select-file" id="select-level.py"
+    onclick="selectFile(this, 'level.py')">level.py</div><div class="select-file" id="select-signup.html"
+    onclick="selectFile(this, 'signup.html')">signup.html</div><div class="select-file" id="select-welcome.html"
+    onclick="selectFile(this, 'welcome.html')">welcome.html</div>
+
+</div>
+
+<div id="multi-examples">
+
+<pre id="confirm.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+  &lt;/head>
+
+  &lt;body id="level5">
+    &lt;img src="/static/logos/level5.png" />&lt;br>&lt;br>
+    Thanks for signing up, you will be redirected soon...
+    &lt;script>
+      setTimeout(function() { window.location = '{{ next }}'; }, 5000);
+    &lt;/script>
+  &lt;/body>
+&lt;/html>
+</pre><pre id="level.py" class="brush: python">class MainPage(webapp.RequestHandler):
+  def render_template(self, filename, context={}):
+    path = os.path.join(os.path.dirname(__file__), filename)
+    self.response.out.write(template.render(path, context))
+
+  def get(self):
+    # Disable the reflected XSS filter for demonstration purposes
+    self.response.headers.add_header("X-XSS-Protection", "0")
+
+    # Route the request to the appropriate template
+    if "signup" in self.request.path:
+      self.render_template('signup.html', 
+        {'next': self.request.get('next')})
+    elif "confirm" in self.request.path:
+      self.render_template('confirm.html', 
+        {'next': self.request.get('next', 'welcome')})
+    else:
+      self.render_template('welcome.html', {})
+    
+    return
+
+application = webapp.WSGIApplication([ ('.*', MainPage), ], debug=False)</pre><pre id="signup.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+  &lt;/head>
+
+  &lt;body id="level5">
+    &lt;img src="/static/logos/level5.png" />&lt;br>&lt;br>
+    &lt;!-- We're ignoring the email, but the poor user will never know! -->
+    Enter email: &lt;input id="reader-email" name="email" value="">
+
+    &lt;br>&lt;br>
+    &lt;a href="{{ next }}">Next >>&lt;/a>
+  &lt;/body>
+&lt;/html>
+</pre><pre id="welcome.html" class="brush: php; html-script: true">&lt;!doctype html>
+&lt;html>
+  &lt;head>
+    &lt;!-- Internal game scripts/styles, mostly boring stuff -->
+    &lt;script src="/static/game-frame.js">&lt;/script>
+    &lt;link rel="stylesheet" href="/static/game-frame-styles.css" />
+  &lt;/head>
+
+  &lt;body id="level5">
+    Welcome! Today we are announcing the much anticipated&lt;br>&lt;br>
+    &lt;img src="/static/logos/level5.png" />&lt;br>&lt;br>
+
+    &lt;a href="/level5/frame/signup?next=confirm">Sign up&lt;/a> 
+    for an exclusive Beta.
+  &lt;/body>
+&lt;/html>
+</pre>
+  <script>
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-level.py'), 
+      'level.py')
+    }, 500);
+    setTimeout(function() { 
+      selectFile(document.getElementById('select-level.py'), 
+      'level.py')
+      }, 1000);
+  </script>
+
+</div>
+
+<script type="text/javascript"> 
+  SyntaxHighlighter.all() 
+</script>
+
+</body>
+</html>

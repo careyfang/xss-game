@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>XSS game: Level 6</title>
+    <link  type="text/css" rel="stylesheet" href="/static/game.css" />
+    <script src="/static/game.js"></script>
+    <script>
+      window.onload = function() { setInputFieldReturnHandler(); }
+    </script>
+  </head>
+  <body>
+    <h1 id="level-title">[6/6]&nbsp;
+      Level 6: Follow the <span id='rabbit'>&#128007;</span></h1>
+
+    <div id="instructions">
+
+    <h2>Mission Description</h2>
+
+    
+	Complex web applications sometimes have the capability to dynamically load
+	JavaScript libraries based on the value of their URL
+	parameters or part of <code>location.hash</code>. 
+  <br><br>
+	This is very tricky to get right -- allowing user input to influence the URL
+  when loading scripts or other potentially dangerous types of data such as
+  <code>XMLHttpRequest</code> often leads to serious vulnerabilities.
+
+
+    <h2>Mission Objective</h2>
+
+    
+    Find a way to <u>make the application request an external file</u> which
+		will cause it to execute an <code>alert()</code>.
+    <br><br>
+		
+
+
+    <div id="next-controls">
+      
+      <a class="next-button" href="/done">Well done! Time to debrief &gt;&gt;</a>
+      
+
+    </div>
+
+    <h2>Your Target</h2>
+  </div>
+
+  <div id="game-frame-container">
+    <div id="topbar"></div>
+    <div class="example-controls">
+      <span class="url">URL</span>
+      <input id="input1" class="urlbar" type="text" value="">
+      <input class="urlbutton" type="Submit" value="Go"
+      onclick="updateFrame(1); return false;">
+    </div>
+    <iframe class="game-frame" src="/level6/frame#/static/gadget.js"></iframe>
+  </div>
+
+  <h2>Target code (<a href="#" onclick="toggleCode(); return false">toggle</a>)</h2>
+
+  <iframe id="source-frame" src="/level6/source"></iframe>
+
+  <h2>Hints <span id="hint-num">0</span>/4 (<a
+      href="#" onclick="showHint(); return false">show</a>)</h2>
+
+  <div id="hints">
+    <ol>
+  
+    <li style="display: none" data-hidden="true"><b>1.</b> 
+    See how the value of the location fragment (after <code>#</code>) 
+         influences the URL of the loaded script.
+  
+    <li style="display: none" data-hidden="true"><b>2.</b> 
+    Is the security check on the gadget URL really foolproof?
+  
+    <li style="display: none" data-hidden="true"><b>3.</b> 
+    Sometimes when I'm frustrated, I feel like <i>screaming</i>...
+  
+    <li style="display: none" data-hidden="true"><b>4.</b> 
+    If you can't easily host your own evil JS file, see if google.com/jsapi?callback=foo
+          will help you here.
+  
+    </ol>
+  </div>
+
+  </body>
+</html>
