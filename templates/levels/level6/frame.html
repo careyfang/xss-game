@@ -7,42 +7,45 @@
 
     <script>
     function setInnerText(element, value) {
-      if (element.innerText) {
+      if (element.innerText !== undefined) {
         element.innerText = value;
       } else {
         element.textContent = value;
       }
     }
 
+    const ALLOWED_GADGETS = ['/static/gadget.js'];
+
     function includeGadget(url) {
       var scriptEl = document.createElement('script');
 
-      // This will totally prevent us from loading evil URLs!
-      if (url.match(/^https?:\/\//)) {
+      // Validate the URL against the allowed gadgets
+      if (!ALLOWED_GADGETS.includes(url)) {
         setInnerText(document.getElementById("log"),
-          "Sorry, cannot load a URL containing \"http\".");
+          "Sorry, the requested gadget is not allowed.");
         return;
       }
 
-      // Load this awesome gadget
+      // Load the trusted gadget
       scriptEl.src = url;
 
       // Show log messages
       scriptEl.onload = function() { 
         setInnerText(document.getElementById("log"),  
           "Loaded gadget from " + url);
-      }
+      };
       scriptEl.onerror = function() { 
         setInnerText(document.getElementById("log"),  
           "Couldn't load gadget from " + url);
-      }
+      };
 
       document.head.appendChild(scriptEl);
     }
 
     // Take the value after # and use it as the gadget filename.
     function getGadgetName() { 
-      return window.location.hash.substr(1) || "/static/gadget.js";
+      var gadget = window.location.hash.substr(1) || '/static/gadget.js';
+      return decodeURIComponent(gadget);
     }
 
     includeGadget(getGadgetName());

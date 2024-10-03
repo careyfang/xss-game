@@ -4,7 +4,7 @@
     <!-- Internal game scripts/styles, mostly boring stuff -->
     <script src="/static/game-frame.js"></script>
     <link rel="stylesheet" href="/static/game-frame-styles.css" />
- 
+
     <script>
       function startTimer(seconds) {
         seconds = parseInt(seconds) || 3;
@@ -13,13 +13,18 @@
           window.history.back();
         }, seconds * 1000);
       }
+
+      window.onload = function() {
+        var timer = {{ timer | tojson }};
+        startTimer(timer);
+      };
     </script>
   </head>
   <body id="level4">
     <img src="/static/logos/level4.png" />
     <br>
-    <img src="/static/loading.gif" onload="startTimer('{{ timer }}');" />
+    <img src="/static/loading.gif" id="loadingImage" />
     <br>
-    <div id="message">Your timer will execute in {{ timer }} seconds.</div>
+    <div id="message">Your timer will execute in {{ timer | e }} seconds.</div>
   </body>
 </html>
