@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, render_template_string
+import os
+import base64
+from flask import Flask, render_template, request, render_template_string, make_response, g
 from markupsafe import escape
 
 app = Flask(__name__)
