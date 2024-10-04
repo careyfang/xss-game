@@ -91,12 +91,12 @@ function toggleCode() {
 }
 
 function logXHR(path) {
-  window.location.toString().match(/level(\d+)/);
-  var lNum = RegExp.$1 || "0";
+  // window.location.toString().match(/level(\d+)/);
+  // var lNum = RegExp.$1 || "0";
 
-  var oReq = new XMLHttpRequest();
-  oReq.open("GET", '/feedback/level' + lNum + path, true);
-  oReq.send();
+  // var oReq = new XMLHttpRequest();
+  // oReq.open("GET", '/feedback/level' + lNum + path, true);
+  // oReq.send();
 }
 
 
